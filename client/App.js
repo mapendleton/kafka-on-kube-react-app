@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import "./app.css";
 import { theme } from "./util/theme";
-import { AppContainer } from "./components/AppContainer";
+import { AppContainer } from "./components/common/AppContainer";
 import { Routes, Route } from "react-router-dom";
-import { TestPage } from "./components/TestPage";
+import { KafkaContainer } from "./components/pages/KafkaContainer";
 
 export class App extends Component {
   render() {
@@ -12,7 +12,7 @@ export class App extends Component {
       <ThemeProvider theme={theme}>
         <Routes>
           <Route path="/" element={<AppContainer />} />
-          <Route path="/test-page" element={<TestPage />} />
+          <Route path="/kafka" element={<KafkaContainer />} />
         </Routes>
       </ThemeProvider>
     );

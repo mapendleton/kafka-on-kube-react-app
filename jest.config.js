@@ -4,6 +4,7 @@
  */
 
 module.exports = {
+  setupFilesAfterEnv: [ require.resolve('regenerator-runtime/runtime') ],
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
