@@ -11,8 +11,12 @@ This repo contains a generic react app template that is served by an express ser
 3. Clone this new repo
 4. CD into new folder from clone
 5. Run `npm i` to install dependencies
-6. Run `npm run start:dev` to start the project locally
+6. Run `npm run start:dev` to start the project locally  
 
+To run in Docker Container, locally:
+1. run ```docker build -f Dockerfile -t ui-demo ./```  
+2. run ```docker run -it -p 4001:3000 ui-demo```
+3. navigate to localhost:4001
 ---
 
 <u>Material UI</u>  
@@ -32,4 +36,9 @@ To run linting on the project, run `npm run clean`.
 Linting will automatically be ran against the project when committing. All errors must be corrected prior to committing code.
 
 <u>CommitLint</u>  
-<u>Husky</u>
+CommitLint is being used to generate team alignment on commits. Additional details on commit rules can be found in commitlint.config.js, in the project's root directory. Example commits:  
+feat(producer-component): add connection to RESTful service
+chore: adding sonar scan  
+  
+<u>Husky</u>  
+Husky is being used to add pre commit hooks that help enforce prettier, linting, and unit testing standards. Additional information can be held [here](https://www.npmjs.com/package/husky).  
