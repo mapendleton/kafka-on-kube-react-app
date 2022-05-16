@@ -4,7 +4,14 @@ import { Box, Card, Typography } from "@mui/material";
 
 export const DisplayArea = ({ messages }) => {
   const display = () => {
-    return messages.map((m) => <Box sx={{ pt: 2 }}>{m}</Box>);
+    return messages.map((m, ind) => {
+      console.log(`ind: `, ind);
+      return (
+        <Box key={{ ind }} sx={{ pt: 2 }}>
+          {m}
+        </Box>
+      );
+    });
   };
 
   return (

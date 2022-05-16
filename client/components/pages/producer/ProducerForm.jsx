@@ -7,7 +7,7 @@ export const ProducerForm = ({ messages, setMessages }) => {
   const [messageText, setMessageText] = useState("");
 
   const handleClick = () => {
-    setMessages([...messages, messageText]);
+    setMessages(messageText);
     setMessageText("");
   };
 
