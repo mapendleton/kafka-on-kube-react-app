@@ -32,8 +32,6 @@ export default class HTTP {
       console.log(`something bad happened while posting to ${this.path}`, e);
       return { status: 500, message: e.message };
     }
-    console.log(`result in HTTP: `, result.status);
-    console.log(`result in HTTP: `, result.data);
     if ([200, 201, 204].includes(result.status)) {
       return { status: result.status, message: result.data };
     }

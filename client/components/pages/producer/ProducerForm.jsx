@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { TextField, Grid, Button } from "@mui/material";
-import { DisplayArea } from "./DisplayArea";
 import PropTypes from "prop-types";
 
-export const ProducerForm = ({ messages, setMessages }) => {
+export const ProducerForm = ({ setMessages }) => {
   const [messageText, setMessageText] = useState("");
 
   const handleClick = () => {
@@ -22,7 +21,7 @@ export const ProducerForm = ({ messages, setMessages }) => {
       columnSpacing={{ xs: 1, sm: 2, md: 3 }}
       sx={{ p: 3 }}
     >
-      <Grid item xs={8} direction="column">
+      <Grid item xs={8}>
         <TextField
           id="producer-message"
           label="Message"
@@ -38,7 +37,7 @@ export const ProducerForm = ({ messages, setMessages }) => {
           }}
         />
       </Grid>
-      <Grid item xs={4} direction="column">
+      <Grid item xs={4}>
         <Button
           variant="contained"
           onClick={handleClick}
@@ -52,6 +51,5 @@ export const ProducerForm = ({ messages, setMessages }) => {
 };
 
 ProducerForm.propTypes = {
-  messages: PropTypes.Array,
   setMessages: PropTypes.func
 };

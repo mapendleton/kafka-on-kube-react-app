@@ -13,20 +13,23 @@ export const Kafka = () => {
     success: null
   });
 
+  let counter = messages.length;
+
   const postMessage = async (message) => {
-    console.log("calling api to post message");
     const result = await axios.post("/api/kafka-ms", {
       id: 4,
       content: "something"
     });
-    console.log(`what is result on page: `, result);
+
     if ([200, 201, 204].includes(result.status)) {
       setPublishStatus({
         ...publishStatus,
         error: null,
         success: "Message published..."
       });
-      setMessages([...messages, message]);
+
+      counter += 1;
+      setMessages([...messages, { text: message, id: counter }]);
     } else {
       setPublishStatus({
         ...publishStatus,
@@ -54,11 +57,11 @@ export const Kafka = () => {
           setMessages={postMessage}
         />
         {publishStatus.error ? (
-          <Alert sx={{ m: 5 }} severity="error">
+          <Alert data-testid="alert-error" sx={{ m: 5 }} severity="error">
             Message NOT published! Please resubmit.
           </Alert>
         ) : publishStatus.success ? (
-          <Alert sx={{ m: 5 }} severity="success">
+          <Alert data-testid="alert-success" sx={{ m: 5 }} severity="success">
             Message published!
           </Alert>
         ) : null}
