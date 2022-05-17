@@ -1,5 +1,10 @@
 import React, { Component } from "react";
-import { AppBar, BottomNavigation } from "@mui/material";
+import {
+  AppBar,
+  BottomNavigation,
+  BottomNavigationAction
+} from "@mui/material";
+import { House } from "@mui/icons-material";
 
 export class Footer extends Component {
   render() {
@@ -11,7 +16,7 @@ export class Footer extends Component {
         data-testid={"footer"}
       >
         <BottomNavigation showLabels value={"test"} onChange={() => {}}>
-          <p>&lt; insert disclosure and footer info here&gt;</p>
+          <BottomNavigationAction label="Home" icon={<House />} />
         </BottomNavigation>
       </AppBar>
     );

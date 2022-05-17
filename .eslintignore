@@ -6,3 +6,4 @@ server.bundle.js
 react-nodejs-basic.iml
 *.test.*
 *.config.js
+README.md
