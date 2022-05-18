@@ -14,8 +14,13 @@ app.use(bodyParser.json());
 app.use("/", express.static("dist"));
 
 app.post("/api/kafka-ms", async (req, res) => {
-  const result = await client.post(req.body);
-  res.status(result.status).send(result.message);
+  try {
+    const result = await client.post(req.body);
+    res.status(result.status).send(result.message);
+  } catch (e) {
+    console.log(`second catch, as it should be`, e);
+    res.status(500).send(e.stack);
+  }
 });
 
 app.listen(port, () => {

@@ -1,10 +1,11 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, ToggleButton, Alert, Checkbox } from "@mui/material";
+import { Check } from "@mui/icons-material";
 import React, { useState } from "react";
-import { Alert } from "@mui/material";
 import axios from "axios";
+import { useInterval } from "usehooks-ts";
 
 import { ProducerForm } from "./producer/ProducerForm";
-import { DisplayArea } from "./producer/DisplayArea";
+import { DisplayArea } from "../common/DisplayArea";
 
 export const Kafka = () => {
   const [messages, setMessages] = useState([]);
@@ -12,32 +13,63 @@ export const Kafka = () => {
     error: null,
     success: null
   });
+  const [consumedMessages, setConsumedMessages] = useState([]);
+  // Dynamic delay
+  const [delay, setDelay] = useState(2000);
+  // ON/OFF
+  const [isPlaying, setPlaying] = useState(false);
+  const [selected, setSelected] = useState(false);
 
   let counter = messages.length;
+  let consumerCounter = consumedMessages.length;
+
+  useInterval(
+    () => {
+      console.log(`consuming messages from kafka topic...`);
+      setConsumedMessages([
+        ...consumedMessages,
+        { text: "test-message", id: consumerCounter }
+      ]);
+      consumerCounter++;
+      // fetch messages from consumer
+      // setCount(count + 1);
+    },
+    // Delay in milliseconds or null to stop it
+    selected ? delay : null
+  );
 
   const postMessage = async (message) => {
-    const result = await axios.post("/api/kafka-ms", {
-      id: 4,
-      content: "something"
-    });
-
-    if ([200, 201, 204].includes(result.status)) {
-      setPublishStatus({
-        ...publishStatus,
-        error: null,
-        success: "Message published..."
+    try {
+      const result = await axios.post("/api/kafka-ms", {
+        id: 4,
+        content: "something"
       });
 
-      counter += 1;
-      setMessages([...messages, { text: message, id: counter }]);
-    } else {
+      if ([200, 201, 204].includes(result.status)) {
+        setPublishStatus({
+          ...publishStatus,
+          error: null,
+          success: "Message published..."
+        });
+
+        counter += 1;
+        setMessages([...messages, { text: message, id: counter }]);
+      } else {
+        setPublishStatus({
+          ...publishStatus,
+          error: "Error publishing message: ${result.message}",
+          success: null
+        });
+      }
+    } catch (e) {
       setPublishStatus({
         ...publishStatus,
-        error: "Error publishing message: ${result.message}",
+        error: "Error publishing message: ${e.stack}",
         success: null
       });
     }
   };
+
   return (
     <Box
       sx={{
@@ -47,7 +79,7 @@ export const Kafka = () => {
         p: 2
       }}
     >
-      <Box data-testid="producer">
+      <Box data-testid="producer" sx={{ p: 5 }}>
         <Typography align="center" sx={{ mb: 1.5 }} color="text.secondary">
           <b>Producer Demo</b>
         </Typography>
@@ -66,12 +98,35 @@ export const Kafka = () => {
           </Alert>
         ) : null}
 
-        <DisplayArea maxWidth={"lg"} messages={messages} />
+        <DisplayArea
+          maxWidth={"lg"}
+          messages={messages}
+          title={"Messages Submitted"}
+        />
       </Box>
-      <Box data-testid="consumer">
+      <Box data-testid="consumer" sx={{ p: 5 }}>
         <Typography align="center" sx={{ mb: 1.5 }} color="text.secondary">
           <b>Consumer Demo</b>
         </Typography>
+        <div align="center">
+          <Box
+            sx={{
+              display: "inline-grid"
+            }}
+          >
+            <Typography color="text.secondary">
+              <p>Consume Messages?</p>
+            </Typography>
+          </Box>
+          <Checkbox onChange={() => setSelected(!selected)} />
+
+          <DisplayArea
+            align="left"
+            maxWidth={"lg"}
+            messages={consumedMessages}
+            title={"Consumed Messages"}
+          />
+        </div>
       </Box>
     </Box>
   );

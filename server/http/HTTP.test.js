@@ -34,6 +34,6 @@ describe("HTTP class test suite: ", () => {
     const client = setMockFail();
     const result = await client.post({ food: "pizza" });
     expect(result.status).toBe(500);
-    expect(result.message).toBe("error");
+    expect(result.message).toBe("ERROR!");
   });
 });

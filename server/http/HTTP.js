@@ -23,18 +23,25 @@ export default class HTTP {
   }
 
   async post(data) {
+    console.log(`making call in http: `, data);
     let result;
     try {
       result = await axios.post(this.path, data, {
         headers: {}
       });
+      console.log(`result: `, result);
     } catch (e) {
-      console.log(`something bad happened while posting to ${this.path}`, e);
-      return { status: 500, message: e.message };
+      console.log(
+        `something bad happened while posting to ${this.path}`,
+        e.stack
+      );
+      return { status: 500, message: e.stack };
     }
+
     if ([200, 201, 204].includes(result.status)) {
       return { status: result.status, message: result.data };
     }
-    return { status: 200, message: result.data };
+
+    return { status: 500, message: result.data };
   }
 }

@@ -12,7 +12,7 @@ mockAxios.post = (success = true, data) => {
   if (success) {
     return { status: 200, data: data };
   } else {
-    throw { status: 500, message: "error" };
+    throw { status: 500, message: "error", stack: "ERROR!" };
   }
 };
 
