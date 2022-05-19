@@ -22,7 +22,7 @@ export class Footer extends Component {
         data-testid={"footer"}
       >
         <Typography
-          variant="h6"
+          variant="body1"
           noWrap
           component="a"
           href="/"
@@ -32,11 +32,10 @@ export class Footer extends Component {
             letterSpacing: ".3rem",
             color: "#fafafa",
             border: 0,
-            p: 2
+            p: 2,
+            fontStyle: "normal"
           }}
           align={"center"}
-          underline="none"
-          text-decoration="none"
         >
           Home
         </Typography>

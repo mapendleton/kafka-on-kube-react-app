@@ -1,11 +1,10 @@
-import { Box, Typography, ToggleButton, Alert, Checkbox } from "@mui/material";
-import { Check } from "@mui/icons-material";
+import { Box, Typography, Alert, Checkbox } from "@mui/material";
 import React, { useState } from "react";
 import axios from "axios";
 import { useInterval } from "usehooks-ts";
 
 import { ProducerForm } from "./producer/ProducerForm";
-import { DisplayArea } from "../common/DisplayArea";
+import { DisplayArea } from "../../common/DisplayArea";
 
 export const Kafka = () => {
   const [messages, setMessages] = useState([]);
@@ -14,10 +13,7 @@ export const Kafka = () => {
     success: null
   });
   const [consumedMessages, setConsumedMessages] = useState([]);
-  // Dynamic delay
-  const [delay, setDelay] = useState(2000);
-  // ON/OFF
-  const [isPlaying, setPlaying] = useState(false);
+  const [delay] = useState(2000);
   const [selected, setSelected] = useState(false);
 
   let counter = messages.length;
@@ -25,14 +21,12 @@ export const Kafka = () => {
 
   useInterval(
     () => {
-      console.log(`consuming messages from kafka topic...`);
       setConsumedMessages([
         ...consumedMessages,
         { text: "test-message", id: consumerCounter }
       ]);
       consumerCounter++;
       // fetch messages from consumer
-      // setCount(count + 1);
     },
     // Delay in milliseconds or null to stop it
     selected ? delay : null
@@ -114,11 +108,12 @@ export const Kafka = () => {
               display: "inline-grid"
             }}
           >
-            <Typography color="text.secondary">
-              <p>Consume Messages?</p>
-            </Typography>
+            <Typography color="text.secondary">Consume Messages?</Typography>
           </Box>
-          <Checkbox onChange={() => setSelected(!selected)} />
+          <Checkbox
+            data-testid="consume-checkbox"
+            onChange={() => setSelected(!selected)}
+          />
 
           <DisplayArea
             align="left"
