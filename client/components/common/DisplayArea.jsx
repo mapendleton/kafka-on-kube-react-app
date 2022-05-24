@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Box, Card, Typography } from "@mui/material";
 
-export const DisplayArea = ({ messages }) => {
+export const DisplayArea = ({ messages, title }) => {
   const messageList = () => {
     const messagesSubmitted = messages.map((m) => {
       return (
@@ -17,9 +17,9 @@ export const DisplayArea = ({ messages }) => {
   return (
     <Box key="boxkey" sx={{ minWidth: 275 }}>
       {messages.length >= 1 ? (
-        <Card key="cardkey" sx={{ p: 3 }}>
+        <Card align="center" key="cardkey" sx={{ p: 3 }}>
           <Typography align="center" sx={{ mb: 1.5 }} color="text.secondary">
-            <b>Submitted Messages</b>
+            <b>{title}</b>
           </Typography>
           {messageList()}
         </Card>
@@ -29,5 +29,6 @@ export const DisplayArea = ({ messages }) => {
 };
 
 DisplayArea.propTypes = {
-  messages: PropTypes.array
+  messages: PropTypes.array,
+  title: PropTypes.string
 };

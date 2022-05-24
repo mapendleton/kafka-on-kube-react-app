@@ -29,12 +29,17 @@ export default class HTTP {
         headers: {}
       });
     } catch (e) {
-      console.log(`something bad happened while posting to ${this.path}`, e);
-      return { status: 500, message: e.message };
+      console.log(
+        `something bad happened while posting to ${this.path}`,
+        e.stack
+      );
+      return { status: 500, message: e.stack };
     }
+
     if ([200, 201, 204].includes(result.status)) {
       return { status: result.status, message: result.data };
     }
-    return { status: 200, message: result.data };
+
+    return { status: 500, message: result.data };
   }
 }

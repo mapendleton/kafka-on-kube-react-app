@@ -1,8 +1,8 @@
 import React from "react";
 import { Container } from "@mui/material";
 
-import { Header } from "../common/Header";
-import { Footer } from "../common/Footer";
+import { Header } from "../../common/Header";
+import { Footer } from "../../common/Footer";
 import { Kafka } from "./Kafka";
 
 export function KafkaContainer() {
