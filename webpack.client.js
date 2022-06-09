@@ -1,6 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 const PROD = process.env.NODE_ENV === "production";
 const DEV = !PROD;
@@ -24,7 +25,6 @@ module.exports = {
     port: 3000,
     open: true,
     hot: true,
-    compress: true,
     historyApiFallback: true,
     proxy: {
       "/api": {
@@ -47,7 +47,10 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ["", ".js", ".jsx"]
+    extensions: ["", ".js", ".jsx"],
+    fallback: {
+      "fs": false
+    },
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
@@ -56,6 +59,7 @@ module.exports = {
     }),
     new HTMLWebpackPlugin({
       template: "./client/index.html"
-    })
+    }),
+    new NodePolyfillPlugin()
   ]
 };

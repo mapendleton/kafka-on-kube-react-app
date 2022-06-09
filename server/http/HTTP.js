@@ -1,19 +1,21 @@
 import axios from "axios";
+import log from "winston";
 
 export default class HTTP {
   #path = "";
   #headers = {};
 
-  constructor(path) {
-    this.path = path;
+  constructor(auth) {
+    log.info(`instantiating a new HTTP object`, auth);
+    this.headers = { ...this.headers, auth: { ...auth } };
   }
 
-  async get() {
+  async get(path) {
     let result;
     try {
-      result = await axios.get(this.path, { headers: {} });
+      result = await axios.get(path, { headers: {} });
     } catch (e) {
-      console.log(`something bad happened while fetching from ${this.path}`, e);
+      log.error(`something bad happened while fetching from ${this.path}`, e);
       return { status: 500, message: e.message };
     }
     if (result.status !== 200) {
@@ -22,20 +24,16 @@ export default class HTTP {
     return { status: 200, message: result.data };
   }
 
-  async post(data) {
+  async post(path, data) {
     let result;
     try {
-      result = await axios.post(this.path, data, {
+      result = await axios.post(path, data, {
         headers: {}
       });
     } catch (e) {
-      console.log(
-        `something bad happened while posting to ${this.path}`,
-        e.stack
-      );
+      log.error(`something bad happened while posting to ${path}`, e.stack);
       return { status: 500, message: e.stack };
     }
-
     if ([200, 201, 204].includes(result.status)) {
       return { status: result.status, message: result.data };
     }
