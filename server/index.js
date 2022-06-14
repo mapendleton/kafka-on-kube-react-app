@@ -16,8 +16,16 @@ const kafkaMsClient = new HTTP({ clientId: "test", token: "xxx" });
 app.use(bodyParser.json());
 app.use("/", express.static("dist"));
 
+app.get("/health", async (req, res) => {
+  res.status(200);
+});
+
 app.post("/api/kafka-ms", async (req, res) => {
   logger.info("posting a message to kafka-ms...");
+  config.kafkaServicePath = PROD
+    ? "http://kafkarestservice:8084"
+    : "http://localhost:8084";
+  logger.info(`config.kafkaServicePath: ${config.kafkaServicePath}`);
   try {
     const result = await kafkaMsClient.post(
       `${config.kafkaServicePath}/topics/${

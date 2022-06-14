@@ -11,11 +11,10 @@ This repo contains a React app that connects to kafka in kubernetes for POC purp
 3. Run `npm i` to install dependencies
 4. Run `npm run start:dev` to start the project locally
 
-To run in Docker Container, locally:
+To run in a Docker Container in Kubernetes (minikube), locally:
 
-1. run `docker build -f Dockerfile -t kafka-ui ./`
-2. run `docker run -it -p 4001:3000 kafka-ui`
-3. navigate to localhost:4001
+1. run `local-setup/start.sh`
+2. navigate to localhost:4001
 
 ---
 

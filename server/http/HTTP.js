@@ -27,11 +27,13 @@ export default class HTTP {
   async post(path, data) {
     let result;
     try {
+      log.info(`posting from http.js to: ${path}`);
       result = await axios.post(path, data, {
         headers: {}
       });
     } catch (e) {
       log.error(`something bad happened while posting to ${path}`, e.stack);
+      log.error(`${e}`);
       return { status: 500, message: e.stack };
     }
     if ([200, 201, 204].includes(result.status)) {
