@@ -35,7 +35,8 @@
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-router-dom": "^6.3.0",
-    "usehooks-ts": "^2.5.3"
+    "usehooks-ts": "^2.5.3",
+    "winston": "^3.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.17.10",
@@ -53,6 +54,7 @@
     "jest": "^28.0.3",
     "jest-environment-jsdom": "^28.0.2",
     "jest-mock-axios": "^4.6.1",
+    "node-polyfill-webpack-plugin": "^1.1.4",
     "prettier": "^2.6.2",
     "prop-types": "^15.8.1",
     "style-loader": "^3.3.1",

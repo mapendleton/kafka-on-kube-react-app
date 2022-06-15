@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: kafkaui
+  name: kafkaui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafkaui
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: kafkaui
+    spec:
+      containers:
+        - image: kafka-ui:0.0.1
+          imagePullPolicy: Never
+          name: kafkaui
+          resources: {}
+          ports:
+            - containerPort: 3001
+              name: kafkauiport
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafkauiservice
+spec:
+  type: NodePort
+  selector:
+    app: kafkaui
+  ports:
+    - name: http
+      protocol: TCP
+      port: 4001
+      targetPort: kafkauiport

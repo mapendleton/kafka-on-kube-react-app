@@ -35,8 +35,8 @@ export const Kafka = () => {
   const postMessage = async (message) => {
     try {
       const result = await axios.post("/api/kafka-ms", {
-        id: 4,
-        content: "something"
+        id: messages.length,
+        content: message
       });
 
       if ([200, 201, 204].includes(result.status)) {
@@ -45,7 +45,6 @@ export const Kafka = () => {
           error: null,
           success: "Message published..."
         });
-
         counter += 1;
         setMessages([...messages, { text: message, id: counter }]);
       } else {
@@ -91,7 +90,6 @@ export const Kafka = () => {
             Message published!
           </Alert>
         ) : null}
-
         <DisplayArea
           maxWidth={"lg"}
           messages={messages}

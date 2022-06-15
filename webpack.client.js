@@ -1,9 +1,11 @@
 const path = require("path");
 const webpack = require("webpack");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 const PROD = process.env.NODE_ENV === "production";
 const DEV = !PROD;
+const redirectTo = PROD? "http://kafkauiservice:4001" : "http://localhost:3001"
 
 module.exports = {
   entry: "./client/index.js",
@@ -24,11 +26,10 @@ module.exports = {
     port: 3000,
     open: true,
     hot: true,
-    compress: true,
     historyApiFallback: true,
     proxy: {
       "/api": {
-        target: "http://localhost:3001"
+        target: redirectTo
       }
     }
   },
@@ -47,7 +48,10 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ["", ".js", ".jsx"]
+    extensions: ["", ".js", ".jsx"],
+    fallback: {
+      "fs": false
+    },
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
@@ -56,6 +60,7 @@ module.exports = {
     }),
     new HTMLWebpackPlugin({
       template: "./client/index.html"
-    })
+    }),
+    new NodePolyfillPlugin()
   ]
 };

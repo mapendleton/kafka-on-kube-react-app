@@ -4,28 +4,49 @@ import express from "express";
 import bodyParser from "body-parser";
 
 import HTTP from "./http/HTTP";
+import { configuration } from "./config";
+import { logger } from "./../util/logger";
 
 const app = express();
 const port = process.env.PORT || 3001;
 const PROD = process.env.NODE_ENV === "production";
+const config = configuration();
 
-const client = new HTTP("http://localhost:8082/greetings");
+const kafkaMsClient = new HTTP({ clientId: "test", token: "xxx" });
 app.use(bodyParser.json());
 app.use("/", express.static("dist"));
 
+app.get("/health", async (req, res) => {
+  res.status(200);
+});
+
 app.post("/api/kafka-ms", async (req, res) => {
+  logger.info("posting a message to kafka-ms...");
+  config.kafkaServicePath = PROD
+    ? "http://kafkarestservice:8084"
+    : "http://localhost:8084";
+  logger.info(`config.kafkaServicePath: ${config.kafkaServicePath}`);
   try {
-    const result = await client.post(req.body);
-    res.status(result.status).send(result.message);
+    const result = await kafkaMsClient.post(
+      `${config.kafkaServicePath}/topics/${
+        req.body?.topic ? req.body?.topic : config.topic
+      }/`,
+      req.body
+    );
+    res.status(result.status).json({ message: result.data });
   } catch (e) {
-    res.status(500).send(e.stack);
+    logger.error(`something bad happened`);
+    logger.error(e);
+    res.status(500).json({ message: e.message });
   }
 });
 
 app.listen(port, () => {
   if (PROD) {
-    console.log(`Server running at http://localhost:${port}...`);
+    logger.info(`server running at http://localhost:${port}...`);
   } else {
-    console.log(`...server running at http://localhost:3001...`);
+    logger.info(
+      `...server running at http://localhost:3001, serving up at http://localhost:3000`
+    );
   }
 });

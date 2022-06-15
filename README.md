@@ -1,23 +1,20 @@
-**react-nodejs-basic**
+**kafka-on-kube-react-app**
 
 ---
 
-This repo contains a generic react app template that is served by an express server. This is meant to serve as a starter project for any new frontends the Services Integration team wants to build out.
+This repo contains a React app that connects to kafka in kubernetes for POC purposes.
 
 <u>Development Setup</u>
 
-1. Select `Use this template` from this repository
-2. Create a new repo named appropriately for your project
-3. Clone this new repo
-4. CD into new folder from clone
-5. Run `npm i` to install dependencies
-6. Run `npm run start:dev` to start the project locally
+1. clone this repo
+2. CD into new folder from clone
+3. Run `npm i` to install dependencies
+4. Run `npm run start:dev` to start the project locally
 
-To run in Docker Container, locally:
+To run in a Docker Container in Kubernetes (minikube), locally:
 
-1. run `docker build -f Dockerfile -t ui-demo ./`
-2. run `docker run -it -p 4001:3000 ui-demo`
-3. navigate to localhost:4001
+1. run `local-setup/start.sh`
+2. navigate to localhost:4001
 
 ---
 

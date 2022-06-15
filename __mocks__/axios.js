@@ -1,6 +1,6 @@
 import mockAxios from "jest-mock-axios";
 
-mockAxios.get = (success = true) => {
+mockAxios.get = (path, headers, success = true) => {
   if (success) {
     return { status: 200, data: "success" };
   } else {
@@ -8,7 +8,7 @@ mockAxios.get = (success = true) => {
   }
 };
 
-mockAxios.post = (success = true, data) => {
+mockAxios.post = (path, data, success = true) => {
   if (success) {
     return { status: 200, data: data };
   } else {
