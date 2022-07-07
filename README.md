@@ -4,7 +4,7 @@
 
 This repo contains a React app that connects to kafka in kubernetes for POC purposes.
 
-<u>*Development Setup</u>
+<u>\*Development Setup</u>
 
 1. clone this repo
 2. CD into new folder from clone
