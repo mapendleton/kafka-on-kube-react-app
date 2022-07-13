@@ -7,3 +7,4 @@ react-nodejs-basic.iml
 *.test.*
 *.config.js
 README.md
+dist
