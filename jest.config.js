@@ -4,7 +4,8 @@
  */
 
 module.exports = {
-  setupFilesAfterEnv: [ require.resolve('regenerator-runtime/runtime') ],
+  setupFilesAfterEnv: [ require.resolve('regenerator-runtime/runtime'), `<rootDir>test/jest-shim.js`,
+],
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
