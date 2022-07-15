@@ -1,4 +1,4 @@
-import logger from "winston";
+import { logger } from "../util/logger";
 
 const defaultTopic = "my-topic";
 const defaultKafkaServicePath = "http://localhost:8084";

@@ -1,3 +1,4 @@
+import "setimmediate";
 import HTTP from "./HTTP";
 import mockAxios from "jest-mock-axios"; // axios is mocked under <root>/__mocks__
 

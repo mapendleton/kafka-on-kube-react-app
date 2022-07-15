@@ -1,3 +1,4 @@
+import "setimmediate";
 import { configuration } from "./config";
 
 describe("config", () => {
