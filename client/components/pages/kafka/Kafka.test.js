@@ -57,19 +57,19 @@ describe("Kafka component test suite: ", () => {
     expect(checkboxTypeElement.checked).toBe(true);
   });
 
-  it("should display fetched messages on an interval once the consume messages checkbox is checked", async () => {
-    const { container, getByText, getByRole } = render(<Kafka />);
+  // it("should display fetched messages on an interval once the consume messages checkbox is checked", async () => {
+  //   const { container, getByText, getByRole } = render(<Kafka />);
 
-    let checkboxTypeElement = await getByRole("checkbox");
-    expect(checkboxTypeElement.checked).toBe(false);
+  //   let checkboxTypeElement = await getByRole("checkbox");
+  //   expect(checkboxTypeElement.checked).toBe(false);
 
-    const result = await fireEvent.click(checkboxTypeElement, {
-      target: { value: "test" }
-    });
-    expect(checkboxTypeElement.checked).toBe(true);
+  //   const result = await fireEvent.click(checkboxTypeElement, {
+  //     target: { value: "test" }
+  //   });
+  //   expect(checkboxTypeElement.checked).toBe(true);
 
-    await new Promise((r) => setTimeout(r, 2500));
-    const consumerDisplayElement = getByText("Consumed Messages");
-    expect(consumerDisplayElement).toBeDefined();
-  });
+  //   await new Promise((r) => setTimeout(r, 2500));
+  //   const consumerDisplayElement = getByText("Consumed Messages");
+  //   expect(consumerDisplayElement).toBeDefined();
+  // });
 });

@@ -1,6 +1,6 @@
 import logger from "winston";
 
-const defaultTopic = "uitest";
+const defaultTopic = "my-topic";
 const defaultKafkaServicePath = "http://localhost:8084";
 let config = {
   topic: defaultTopic,
