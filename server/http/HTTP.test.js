@@ -1,6 +1,6 @@
 import "setimmediate";
 import HTTP from "./HTTP";
-import mockAxios from "jest-mock-axios"; // axios is mocked under <root>/__mocks__
+import mockAxios from "jest-mock-axios";
 
 describe("HTTP class test suite: ", () => {
   const client = new HTTP();

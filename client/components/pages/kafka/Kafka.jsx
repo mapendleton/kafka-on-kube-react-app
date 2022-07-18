@@ -34,7 +34,10 @@ export const Kafka = () => {
     stompClient.connect({}, function (frame) {
       console.log("Connected: " + frame);
       stompClient.subscribe("/topic/consumer", function (message) {
-        setConsumedMessages(current => [...current,{ text: JSON.parse(message.body).content, id: counter+=1 }]);
+        setConsumedMessages((current) => [
+          ...current,
+          { text: message.body.content, id: (counter += 1) }
+        ]);
       });
     });
   }
