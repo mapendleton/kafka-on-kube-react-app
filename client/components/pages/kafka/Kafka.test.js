@@ -12,16 +12,16 @@ describe("Kafka component test suite: ", () => {
   it("should display messages when user submits a them", async () => {
     const { container, getByTestId, findByText } = render(<Kafka />);
     const textFieldElement = container.querySelector("#producer-message");
-    await fireEvent.change(textFieldElement, {
+    await waitFor(() => fireEvent.change(textFieldElement, {
       target: { value: "test-message-1" }
-    });
+    }));
     const buttonElement = getByTestId("submit-message-button");
     await fireEvent.click(buttonElement);
 
-    await fireEvent.change(textFieldElement, {
+    await waitFor(() => fireEvent.change(textFieldElement, {
       target: { value: "test-message-2" }
-    });
-    await fireEvent.click(buttonElement);
+    }));
+    await waitFor(() => fireEvent.click(buttonElement));
 
     expect(await findByText("test-message-1")).toBeDefined();
     expect(await findByText("test-message-2")).toBeDefined();
