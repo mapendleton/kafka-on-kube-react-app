@@ -1,5 +1,5 @@
 import "dotenv/config";
-
+import "setimmediate";
 import express from "express";
 import bodyParser from "body-parser";
 

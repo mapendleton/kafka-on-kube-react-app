@@ -1,10 +1,11 @@
 import { Box, Typography, Alert, Checkbox } from "@mui/material";
 import React, { useState } from "react";
 import axios from "axios";
-import { useInterval } from "usehooks-ts";
-
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
 import { ProducerForm } from "./producer/ProducerForm";
 import { DisplayArea } from "../../common/DisplayArea";
+import { logger } from "../../../util/logger";
 
 export const Kafka = () => {
   const [messages, setMessages] = useState([]);
@@ -13,24 +14,42 @@ export const Kafka = () => {
     success: null
   });
   const [consumedMessages, setConsumedMessages] = useState([]);
-  const [delay] = useState(2000);
-  const [selected, setSelected] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  var stompClient = null;
+
+  const handleChange = (event) => {
+    if (event.target.checked) {
+      connect();
+    } else {
+      disconnect();
+    }
+    setIsChecked((current) => !current);
+  };
 
   let counter = messages.length;
-  let consumerCounter = consumedMessages.length;
 
-  useInterval(
-    () => {
-      setConsumedMessages([
-        ...consumedMessages,
-        { text: "test-message", id: consumerCounter }
-      ]);
-      consumerCounter++;
-      // fetch messages from consumer
-    },
-    // Delay in milliseconds or null to stop it
-    selected ? delay : null
-  );
+  /*************************************************************/
+  function connect() {
+    const socket = new SockJS("http://localhost:8084/kafka-consumer");
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+      logger.info("Connected: " + frame);
+      stompClient.subscribe("/topic/consumer", function (message) {
+        setConsumedMessages((current) => [
+          ...current,
+          { text: message.body.content, id: (counter += 1) }
+        ]);
+      });
+    });
+  }
+
+  function disconnect() {
+    if (stompClient !== null) {
+      stompClient.disconnect();
+    }
+    logger.info("Disconnected");
+  }
+  /*************************************************************/
 
   const postMessage = async (message) => {
     try {
@@ -53,6 +72,11 @@ export const Kafka = () => {
           error: "Error publishing message: ${result.message}",
           success: null
         });
+        logger.error(
+          "ERROR publishing message {} : {} ",
+          publishStatus.error,
+          result.message
+        );
       }
     } catch (e) {
       setPublishStatus({
@@ -60,6 +84,11 @@ export const Kafka = () => {
         error: "Error publishing message: ${e.stack}",
         success: null
       });
+      logger.error(
+        "ERROR publishing message {} : Stack = {}",
+        publishStatus.error,
+        e.stack
+      );
     }
   };
 
@@ -110,7 +139,8 @@ export const Kafka = () => {
           </Box>
           <Checkbox
             data-testid="consume-checkbox"
-            onChange={() => setSelected(!selected)}
+            value={isChecked}
+            onChange={handleChange}
           />
 
           <DisplayArea

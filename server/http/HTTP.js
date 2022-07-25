@@ -1,12 +1,12 @@
 import axios from "axios";
-import log from "winston";
+import { logger } from "../../util/logger";
 
 export default class HTTP {
   #path = "";
   #headers = {};
 
   constructor(auth) {
-    log.info(`instantiating a new HTTP object`, auth);
+    logger.info(`instantiating a new HTTP object: ${auth}`);
     this.headers = { ...this.headers, auth: { ...auth } };
   }
 
@@ -15,7 +15,10 @@ export default class HTTP {
     try {
       result = await axios.get(path, { headers: {} });
     } catch (e) {
-      log.error(`something bad happened while fetching from ${this.path}`, e);
+      logger.error(
+        `something bad happened while fetching from ${this.path}`,
+        e
+      );
       return { status: 500, message: e.message };
     }
     if (result.status !== 200) {
@@ -27,13 +30,13 @@ export default class HTTP {
   async post(path, data) {
     let result;
     try {
-      log.info(`posting from http.js to: ${path}`);
+      logger.info(`posting from http.js to: ${path}`);
       result = await axios.post(path, data, {
         headers: {}
       });
     } catch (e) {
-      log.error(`something bad happened while posting to ${path}`, e.stack);
-      log.error(`${e}`);
+      logger.error(`something bad happened while posting to ${path}`, e.stack);
+      logger.error(`${e}`);
       return { status: 500, message: e.stack };
     }
     if ([200, 201, 204].includes(result.status)) {

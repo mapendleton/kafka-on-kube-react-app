@@ -2,6 +2,32 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import { Kafka } from "./Kafka";
 
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
+
+jest.mock("sockjs-client", () => {
+  return jest.fn().mockImplementation(() => {
+    return { SockJS: jest.fn() };
+  });
+});
+
+jest.mock("@stomp/stompjs", () => {
+  return {
+    Stomp: {
+      over: () => {
+        return {
+          connect: (path, cb) => {
+            cb("mocked");
+          },
+          subscribe: (path, cb) => {
+            cb({ body: { content: "mocked-test-message" } });
+          }
+        };
+      }
+    }
+  };
+});
+
 describe("Kafka component test suite: ", () => {
   it("should render the producer and consumer demos", () => {
     const { getByTestId } = render(<Kafka />);
@@ -57,7 +83,7 @@ describe("Kafka component test suite: ", () => {
     expect(checkboxTypeElement.checked).toBe(true);
   });
 
-  it("should display fetched messages on an interval once the consume messages checkbox is checked", async () => {
+  it("should display consumed messages", async () => {
     const { container, getByText, getByRole } = render(<Kafka />);
 
     let checkboxTypeElement = await getByRole("checkbox");
@@ -68,8 +94,7 @@ describe("Kafka component test suite: ", () => {
     });
     expect(checkboxTypeElement.checked).toBe(true);
 
-    await new Promise((r) => setTimeout(r, 2500));
-    const consumerDisplayElement = getByText("Consumed Messages");
+    const consumerDisplayElement = getByText("mocked-test-message");
     expect(consumerDisplayElement).toBeDefined();
   });
 });
