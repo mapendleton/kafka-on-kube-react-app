@@ -5,6 +5,7 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { ProducerForm } from "./producer/ProducerForm";
 import { DisplayArea } from "../../common/DisplayArea";
+import { logger } from "../../../util/logger";
 
 export const Kafka = () => {
   const [messages, setMessages] = useState([]);
@@ -29,10 +30,10 @@ export const Kafka = () => {
 
   /*************************************************************/
   function connect() {
-    var socket = new SockJS("http://localhost:8084/kafka-consumer");
+    const socket = new SockJS("http://localhost:8084/kafka-consumer");
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
-      console.log("Connected: " + frame);
+      logger.info("Connected: " + frame);
       stompClient.subscribe("/topic/consumer", function (message) {
         setConsumedMessages((current) => [
           ...current,
@@ -46,7 +47,7 @@ export const Kafka = () => {
     if (stompClient !== null) {
       stompClient.disconnect();
     }
-    console.log("Disconnected");
+    logger.info("Disconnected");
   }
   /*************************************************************/
 
@@ -71,7 +72,7 @@ export const Kafka = () => {
           error: "Error publishing message: ${result.message}",
           success: null
         });
-        console.error(
+        logger.error(
           "ERROR publishing message {} : {} ",
           publishStatus.error,
           result.message
@@ -83,7 +84,7 @@ export const Kafka = () => {
         error: "Error publishing message: ${e.stack}",
         success: null
       });
-      console.error(
+      logger.error(
         "ERROR publishing message {} : Stack = {}",
         publishStatus.error,
         e.stack
