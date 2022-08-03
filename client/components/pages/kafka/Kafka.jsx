@@ -38,10 +38,10 @@ export const Kafka = () => {
       onConnect: function (frame) {
         console.log("connected: "+ frame.body);
         _client.subscribe("/topic/consumer", function (message) {
-            setConsumedMessages((current) => [
-              ...current,
-              { text: JSON.parse(message.body).content, id: (counter += 1) }
-            ]);
+              setConsumedMessages((current) => [
+                ...current,
+                { text: JSON.parse(message.body).content, id: (counter += 1) }
+              ]);
         });
         setClient(_client);
       },

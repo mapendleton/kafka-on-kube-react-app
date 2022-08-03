@@ -2,9 +2,6 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import { Kafka } from "./Kafka";
 
-import SockJS from "sockjs-client";
-import { Stomp } from "@stomp/stompjs";
-
 jest.mock("sockjs-client", () => {
   return jest.fn().mockImplementation(() => {
     return { SockJS: jest.fn() };
@@ -13,20 +10,14 @@ jest.mock("sockjs-client", () => {
 
 jest.mock("@stomp/stompjs", () => {
   return {
-    Stomp: {
-      over: () => {
-        return {
-          connect: (path, cb) => {
-            cb("mocked");
-          },
-          subscribe: (path, cb) => {
-            cb({ body: { content: "mocked-test-message" } });
-          }
-        };
-      }
-    }
-  };
-});
+    Client: () => {
+      return {
+        activate: () => {
+          console.log("activate was called");
+        }
+      };
+    }};
+})
 
 describe("Kafka component test suite: ", () => {
   it("should render the producer and consumer demos", () => {
@@ -77,24 +68,42 @@ describe("Kafka component test suite: ", () => {
     let checkboxTypeElement = await getByRole("checkbox");
     expect(checkboxTypeElement.checked).toBe(false);
 
-    const result = await fireEvent.click(checkboxTypeElement, {
+    await fireEvent.click(checkboxTypeElement, {
       target: { value: "test" }
     });
     expect(checkboxTypeElement.checked).toBe(true);
   });
 
-  it("should display consumed messages", async () => {
-    const { container, getByText, getByRole } = render(<Kafka />);
+  it("should connect to client when checkbox is checked", async () => {
+    const { getByRole } = render(<Kafka />);
 
+    const spy = jest.spyOn(console, 'log');
     let checkboxTypeElement = await getByRole("checkbox");
     expect(checkboxTypeElement.checked).toBe(false);
 
-    const result = await fireEvent.click(checkboxTypeElement, {
+    await fireEvent.click(checkboxTypeElement, {
+      target: { value: "test" }
+    });
+    expect(checkboxTypeElement.checked).toBe(true);
+    expect(spy).toHaveBeenCalledWith("activate was called");
+  });
+
+  it("should disconnect when checkbox is unchecked", async () => {
+    const { getByRole } = render(<Kafka />);
+
+    const spy = jest.spyOn(console, 'log');
+    let checkboxTypeElement = await getByRole("checkbox");
+    expect(checkboxTypeElement.checked).toBe(false);
+
+    await fireEvent.click(checkboxTypeElement, {
       target: { value: "test" }
     });
     expect(checkboxTypeElement.checked).toBe(true);
 
-    const consumerDisplayElement = getByText("mocked-test-message");
-    expect(consumerDisplayElement).toBeDefined();
+    await fireEvent.click(checkboxTypeElement, {
+      target: { value: "test" }
+    });
+    expect(checkboxTypeElement.checked).toBe(false);
+    expect(spy).toHaveBeenCalledWith("Disconnected...");
   });
 });
