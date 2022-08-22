@@ -8,6 +8,7 @@ import { DisplayArea } from "../../common/DisplayArea";
 //import { logger } from "../../../../util/logger";
 
 export const Kafka = () => {
+  const kafkaServicePath = process.env.NODE_ENV === "production" ? "http://kafka-ms:8084" : "http://localhost:8084";
   const [messages, setMessages] = useState([]);
   const [publishStatus, setPublishStatus] = useState({
     error: null,
@@ -33,7 +34,7 @@ export const Kafka = () => {
         console.log(str);
       },
       webSocketFactory: function () {
-        return new SockJS("http://localhost:8084/kafka-consumer");
+        return new SockJS(`${kafkaServicePath}/kafka-consumer`);
       },
       onConnect: function (frame) {
         console.log("connected: "+ frame.body);

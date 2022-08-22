@@ -13,4 +13,8 @@ describe("config", () => {
     const result = configuration("sandbox");
     expect(result.kafkaServicePath).not.toBe("http://localhost:8084");
   });
+  it("should return the kafka-ms service path when set to production", () => {
+    const result = configuration("production");
+    expect(result.kafkaServicePath).toEqual("http://kafka-ms:8084");
+  });
 });

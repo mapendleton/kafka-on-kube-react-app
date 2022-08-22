@@ -17,6 +17,11 @@ export const configuration = (env = process.env.ENVIRONMENT) => {
       config = { ...config, kafkaServicePath: "http://tbd" };
       break;
 
+    case "production":
+      logger.info("Building for production");
+      config = { ...config, kafkaServicePath: "http://kafka-ms:8084"};
+      break;
+
     default:
       logger.info("Building for default: 'dev' environment...");
       break;

@@ -10,7 +10,8 @@ module.exports = {
   target: "node",
 
   output: {
-    path: path.resolve(__dirname),
+    path: path.resolve(__dirname, "dist"),
+    //publicPath: path.resolve(__dirname, "dist"),
     filename: "server.bundle.js"
   },
 
