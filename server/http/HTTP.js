@@ -35,7 +35,7 @@ export default class HTTP {
         headers: {}
       });
     } catch (e) {
-      logger.error(`something bad happened while posting to ${path}`, e.stack);
+      logger.error(`something bad happened while posting to ${path}`+"STACK: "+e.stack);
       logger.error(`${e}`);
       return { status: 500, message: e.stack };
     }

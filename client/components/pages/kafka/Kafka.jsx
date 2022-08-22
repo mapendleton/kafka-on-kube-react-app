@@ -2,10 +2,10 @@ import { Box, Typography, Alert, Checkbox } from "@mui/material";
 import React, { useState } from "react";
 import axios from "axios";
 import SockJS from "sockjs-client";
-import { Stomp } from "@stomp/stompjs";
+import { Client } from "@stomp/stompjs";
 import { ProducerForm } from "./producer/ProducerForm";
 import { DisplayArea } from "../../common/DisplayArea";
-import { logger } from "../../../util/logger";
+//import { logger } from "../../../../util/logger";
 
 export const Kafka = () => {
   const [messages, setMessages] = useState([]);
@@ -15,8 +15,7 @@ export const Kafka = () => {
   });
   const [consumedMessages, setConsumedMessages] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
-  var stompClient = null;
-
+  const [client, setClient] = useState(null);
   const handleChange = (event) => {
     if (event.target.checked) {
       connect();
@@ -25,29 +24,45 @@ export const Kafka = () => {
     }
     setIsChecked((current) => !current);
   };
-
   let counter = messages.length;
 
   /*************************************************************/
   function connect() {
-    const socket = new SockJS("http://localhost:8084/kafka-consumer");
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-      logger.info("Connected: " + frame);
-      stompClient.subscribe("/topic/consumer", function (message) {
-        setConsumedMessages((current) => [
-          ...current,
-          { text: message.body.content, id: (counter += 1) }
-        ]);
-      });
+    const _client = new Client({
+      debug: function (str) {
+        console.log(str);
+      },
+      webSocketFactory: function () {
+        return new SockJS("http://localhost:8084/kafka-consumer");
+      },
+      onConnect: function (frame) {
+        console.log("connected: "+ frame.body);
+        _client.subscribe("/topic/consumer", function (message) {
+              setConsumedMessages((current) => [
+                ...current,
+                { text: JSON.parse(message.body).content, id: (counter += 1) }
+              ]);
+        });
+        setClient(_client);
+      },
+      onDisconnect: function (frame) {
+        console.log("DISCONNECTED: "+frame);
+      },
+      onWebSocketClose: function () {
+        console.log("WEBSOCKET CLOSED...");
+      },
+      reconnectDelay: 0,
     });
+    _client.activate();
   }
 
   function disconnect() {
-    if (stompClient !== null) {
-      stompClient.disconnect();
+    if (client !== null) {
+      console.log("attempting to disconnect...");
+      client.deactivate();
     }
-    logger.info("Disconnected");
+    else console.log("client was null");
+    console.log("Disconnected...");
   }
   /*************************************************************/
 
@@ -72,7 +87,7 @@ export const Kafka = () => {
           error: "Error publishing message: ${result.message}",
           success: null
         });
-        logger.error(
+        console.error(
           "ERROR publishing message {} : {} ",
           publishStatus.error,
           result.message
@@ -81,11 +96,11 @@ export const Kafka = () => {
     } catch (e) {
       setPublishStatus({
         ...publishStatus,
-        error: "Error publishing message: ${e.stack}",
+        error: "Error publishing message:"+e.stack+"MESSAGE: "+e.message,
         success: null
       });
-      logger.error(
-        "ERROR publishing message {} : Stack = {}",
+      console.error(
+        "ERROR publishing message %s : Stack = %s",
         publishStatus.error,
         e.stack
       );
